@@ -22,6 +22,9 @@ const AdminUsers = ({ onLogout }) => {
     const [editName, setEditName] = useState('');
     const [editEmail, setEditEmail] = useState('');
 
+    const [editRole, setEditRole] = useState('');
+    const [updating, setUpdating] = useState(false);
+
     useEffect(() => {
         const fetchUsers = async () => {
             try {
@@ -46,6 +49,7 @@ const AdminUsers = ({ onLogout }) => {
         setSelectedUser(user);
         setEditName(user.fullName);
         setEditEmail(user.email);
+        setEditRole(user.role || 'user');
         setShowEdit(true);
     };
 
@@ -54,14 +58,50 @@ const AdminUsers = ({ onLogout }) => {
         setShowDelete(true);
     };
 
-    const handleUpdate = () => {
-        setUsers(prev => prev.map(u => u._id === selectedUser._id ? { ...u, fullName: editName, email: editEmail } : u));
-        setShowEdit(false);
+    const handleUpdate = async () => {
+        setUpdating(true);
+        try {
+            const res = await fetch(`http://localhost:5000/api/auth/users/${selectedUser._id}/role`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    fullName: editName,
+                    email: editEmail,
+                    role: editRole
+                })
+            });
+
+            if (res.ok) {
+                setUsers(prev => prev.map(u => u._id === selectedUser._id ? { ...u, fullName: editName, email: editEmail, role: editRole } : u));
+                setShowEdit(false);
+            } else {
+                const data = await res.json();
+                alert(data.message || 'Update failed');
+            }
+        } catch (err) {
+            console.error('Update failed:', err);
+            alert('Server error');
+        } finally {
+            setUpdating(false);
+        }
     };
 
-    const handleDelete = () => {
-        setUsers(prev => prev.filter(u => u._id !== selectedUser._id));
-        setShowDelete(false);
+    const handleDelete = async () => {
+        try {
+            const res = await fetch(`http://localhost:5000/api/auth/users/${selectedUser._id}`, {
+                method: 'DELETE'
+            });
+
+            if (res.ok) {
+                setUsers(prev => prev.filter(u => u._id !== selectedUser._id));
+                setShowDelete(false);
+            } else {
+                alert('Delete failed');
+            }
+        } catch (err) {
+            console.error('Delete failed:', err);
+            alert('Server error');
+        }
     };
 
     const statusBadge = (status) => {
@@ -128,15 +168,14 @@ const AdminUsers = ({ onLogout }) => {
                                 </thead>
                                 <tbody>
                                     {filtered.map((user, idx) => {
-                                        const ins = dummyInsurance[idx % dummyInsurance.length];
                                         return (
                                             <tr key={user._id} className="align-middle bg-transparent" style={{ borderColor: 'rgba(255, 255, 255, 0.04)', background: 'transparent' }}>
                                                 <td className="px-4 py-3 bg-transparent" style={{ color: 'rgba(255, 255, 255, 0.65)', fontSize: 'small' }}>{idx + 1}</td>
                                                 <td className="py-3 bg-transparent" style={{ color: '#f8fafc' }}>{user.fullName}</td>
                                                 <td className="py-3 bg-transparent" style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 'small' }}>{user.email}</td>
                                                 <td className="py-3 bg-transparent">
-                                                    <Badge bg={user.role === 'admin' ? 'danger-subtle' : 'info-subtle'}
-                                                        className={`text-${user.role === 'admin' ? 'danger' : 'info'} rounded-pill px-3`}>
+                                                    <Badge bg={user.role === 'admin' ? 'danger-subtle' : (user.role === 'officer' ? 'warning-subtle' : 'info-subtle')}
+                                                        className={`text-${user.role === 'admin' ? 'danger' : (user.role === 'officer' ? 'warning' : 'info')} rounded-pill px-3`}>
                                                         {user.role}
                                                     </Badge>
                                                 </td>
@@ -218,16 +257,29 @@ const AdminUsers = ({ onLogout }) => {
                             <Form.Label className="small fw-bold">Full Name</Form.Label>
                             <Form.Control value={editName} onChange={(e) => setEditName(e.target.value)} className="rounded-pill" />
                         </Form.Group>
-                        <Form.Group className="mb-4">
+                        <Form.Group className="mb-3">
                             <Form.Label className="small fw-bold">Email</Form.Label>
                             <Form.Control type="email" value={editEmail} onChange={(e) => setEditEmail(e.target.value)} className="rounded-pill" />
+                        </Form.Group>
+                        <Form.Group className="mb-4">
+                            <Form.Label className="small fw-bold">User Role</Form.Label>
+                            <Form.Select
+                                value={editRole}
+                                onChange={(e) => setEditRole(e.target.value)}
+                                className="rounded-pill"
+                                style={{ background: '#f8fafc' }}
+                            >
+                                <option value="user">User</option>
+                                <option value="officer">Officer</option>
+                                <option value="admin">Admin</option>
+                            </Form.Select>
                         </Form.Group>
                         <div className="d-flex gap-2">
                             <Button variant="light" className="rounded-pill flex-grow-1" onClick={() => setShowEdit(false)}>
                                 <FaTimes className="me-1" /> Cancel
                             </Button>
-                            <Button variant="primary" className="rounded-pill flex-grow-1" onClick={handleUpdate}>
-                                <FaCheckCircle className="me-1" /> Save Changes
+                            <Button variant="primary" className="rounded-pill flex-grow-1" onClick={handleUpdate} disabled={updating}>
+                                {updating ? <Spinner animation="border" size="sm" /> : <><FaCheckCircle className="me-1" /> Save Changes</>}
                             </Button>
                         </div>
                     </Modal.Body>
