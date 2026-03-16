@@ -1,0 +1,297 @@
+.claim-form {
+    background: linear-gradient(145deg, rgba(15, 23, 42, 0.78), rgba(30, 41, 59, 0.62));
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 18px;
+    box-shadow: 0 14px 42px rgba(0, 0, 0, 0.28);
+    padding: 2rem;
+    max-width: 900px;
+    margin: 1rem auto 0;
+    color: #e2e8f0;
+}
+
+.claim-form h3,
+.claim-form h4,
+.claim-form p,
+.claim-form li,
+.claim-form label,
+.claim-form b,
+.claim-form strong {
+    color: #e5e7eb !important;
+}
+
+.stepper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 1.25rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+}
+
+.step-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 110px;
+}
+
+.step {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(148, 163, 184, 0.26);
+    color: #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.05rem;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    transition: all 0.2s ease;
+}
+
+.step.active {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    color: #fff;
+    transform: translateY(-1px);
+    border-color: rgba(59, 130, 246, 0.55);
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+}
+
+.step.completed {
+    background: linear-gradient(135deg, #10b981, #22c55e);
+    color: #fff;
+    border-color: rgba(16, 185, 129, 0.55);
+}
+
+.step-label {
+    margin-top: 0.45rem;
+    font-size: 0.8rem;
+    color: rgba(226, 232, 240, 0.82);
+    text-align: center;
+}
+
+.step-connector {
+    position: absolute;
+    top: 20px;
+    left: calc(100% - 10px);
+    width: 42px;
+    height: 2px;
+    background: rgba(148, 163, 184, 0.4);
+}
+
+.step-connector.completed {
+    background: rgba(59, 130, 246, 0.95);
+}
+
+.validation-hint {
+    margin: 0.2rem 0 1rem;
+    font-size: 0.88rem;
+    color: #fca5a5;
+}
+
+.form-row {
+    display: flex;
+    gap: 1.1rem;
+    margin-bottom: 1.05rem;
+}
+
+.form-row-3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    width: 100%;
+}
+
+.form-field {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.form-field-label {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #e5e7eb !important;
+}
+
+.form-row input,
+.form-row select,
+.form-row textarea {
+    flex: 1;
+    padding: 0.75rem 0.95rem;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    border-radius: 10px;
+    font-size: 1rem;
+    background: rgba(15, 23, 42, 0.55);
+    color: #f8fafc !important;
+}
+
+.claim-form .form-row input::placeholder,
+.claim-form .form-row textarea::placeholder,
+.claim-form .form-row select,
+.claim-form .form-row option {
+    color: rgba(226, 232, 240, 0.65) !important;
+    opacity: 1;
+}
+
+.claim-form .form-row input[type="date"] {
+    color: #f8fafc !important;
+}
+
+.claim-form .form-row input:focus,
+.claim-form .form-row select:focus,
+.claim-form .form-row textarea:focus {
+    outline: none !important;
+    border-color: #2563eb !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2) !important;
+    background: rgba(15, 23, 42, 0.78);
+}
+
+.form-row label {
+    flex: 1;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+}
+
+.form-row textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+.conditional-card {
+    background: rgba(148, 163, 184, 0.1);
+    border: 1px solid rgba(148, 163, 184, 0.26);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.conditional-card h4 {
+    margin-bottom: 0.8rem;
+}
+
+.info-chip {
+    display: inline-block;
+    margin-bottom: 1rem;
+    padding: 0.45rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    color: #bfdbfe;
+    border: 1px solid rgba(59, 130, 246, 0.35);
+    background: rgba(59, 130, 246, 0.12);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.form-actions button {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    color: #fff;
+    border: 1px solid rgba(59, 130, 246, 0.5);
+    border-radius: 10px;
+    padding: 0.72rem 1.65rem;
+    font-size: 0.98rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.form-actions button[type="button"] {
+    background: rgba(15, 23, 42, 0.45);
+    color: #e2e8f0;
+    border-color: rgba(148, 163, 184, 0.4);
+}
+
+.form-actions button[type="button"]:last-of-type {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    color: #fff;
+    border-color: rgba(59, 130, 246, 0.5);
+}
+
+.form-actions button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.28);
+}
+
+.form-actions button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.review-section {
+    background: rgba(15, 23, 42, 0.5);
+    border-radius: 12px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(148, 163, 184, 0.24);
+}
+
+.review-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.review-section li {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+    .claim-form {
+        padding: 1.25rem;
+        margin: 1rem auto;
+    }
+    .step-item {
+        min-width: 92px;
+    }
+    .step {
+        width: 36px;
+        height: 36px;
+        font-size: 0.95rem;
+    }
+    .step-label {
+        font-size: 0.72rem;
+    }
+    .step-connector {
+        top: 17px;
+        width: 26px;
+        left: calc(100% - 5px);
+    }
+    .form-row {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    .form-row-3 {
+        grid-template-columns: 1fr;
+    }
+    .form-actions {
+        justify-content: space-between;
+    }
+    .form-actions button {
+        padding: 0.65rem 1.1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .claim-form {
+        padding: 1rem;
+    }
+    .form-actions {
+        flex-direction: column;
+    }
+    .form-actions button {
+        width: 100%;
+    }
+}

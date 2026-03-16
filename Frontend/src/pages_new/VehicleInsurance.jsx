@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Button, Form, Accordion, Card, Badge } from 'react-bootstrap';
+import { Container, Row, Col, Button, Card, Badge } from 'react-bootstrap';
 import { FaCar, FaMotorcycle, FaShieldAlt, FaClock, FaCheckCircle, FaPercentage, FaBolt, FaStar, FaHeadset, FaQuoteLeft, FaAward, FaRobot, FaMapMarkerAlt } from 'react-icons/fa';
+import ClaimForm from '../components/ClaimForm';
 import { motion, useInView } from 'framer-motion';
 
 /* ─── Reusable scroll-triggered fade-in wrapper ─────────────── */
@@ -399,33 +400,7 @@ const VehicleInsurance = ({ user }) => {
                 </Container>
             </div>
 
-            {/* ── How It Works ────────────────────────────────────── */}
-            <div className="py-5" style={{ background: 'rgba(255, 255, 255, 0.01)', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                <Container>
-                    <Row className="align-items-center">
-                        <Col md={10} className="mx-auto">
-                            <h2 className="display-5 fw-bold mb-5 text-center text-white">Buy insurance in 3 simple steps</h2>
-                            <Row>
-                                {[
-                                    { step: 1, title: 'Choose a Plan', desc: 'Browse our plans — Basic, Standard, or Premium — and select the one that fits your budget and needs.' },
-                                    { step: 2, title: 'Enter Details', desc: 'Provide your vehicle registration number and personal details. No physical documents needed.' },
-                                    { step: 3, title: 'Pay & Get Policy', desc: 'Complete the payment and receive your policy document instantly in your email inbox.' }
-                                ].map(({ step, title, desc }) => (
-                                    <Col md={4} className="mb-4" key={step}>
-                                        <div className="process-step text-center px-3">
-                                            <div className="step-number mx-auto mb-3" style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' }}>{step}</div>
-                                            <h5 className="fw-bold text-white">{title}</h5>
-                                            <p className="text-secondary opacity-75">{desc}</p>
-                                        </div>
-                                    </Col>
-                                ))}
-                            </Row>
-                        </Col>
-                    </Row>
-                </Container>
-            </div>
-
-            {/* ── Claim Section ─────────────────────────────────── */}
+            {/* ── Claim Section (New Multi-Step Form) ───────────── */}
             <Container className="py-5 my-5" ref={claimRef}>
                 <Row className="justify-content-center">
                     <Col lg={10}>
@@ -433,159 +408,13 @@ const VehicleInsurance = ({ user }) => {
                             <div className="text-center mb-5">
                                 <Badge bg="transparent" className="text-danger px-3 py-2 rounded-pill mb-3 border border-danger border-opacity-25" style={{ backgroundColor: 'rgba(239,68,68,0.08)' }}>Claim Process</Badge>
                                 <h2 className="fw-bold mb-3 text-white">Need to Raise a Claim?</h2>
-                                <p className="text-secondary opacity-75">Follow our simple 3-step process to get your claim processed instantly.</p>
-                                {!submitSuccess && (
-                                    <div className="d-flex justify-content-center align-items-center mt-4 claim-steps-indicator">
-                                        {[1, 2, 3].map((step, index) => (
-                                            <React.Fragment key={step}>
-                                                <div className={`step-dot ${claimStep >= step ? 'active' : ''} ${claimStep > step ? 'completed' : ''}`}>
-                                                    {claimStep > step ? '✓' : step}
-                                                </div>
-                                                {index < 2 && (
-                                                    <div className={`step-line ${claimStep > step ? 'completed' : ''}`}></div>
-                                                )}
-                                            </React.Fragment>
-                                        ))}
-                                    </div>
-                                )}
+                                <p className="text-secondary opacity-75">Fill out the form below to submit your vehicle insurance claim.</p>
                             </div>
-
-                            {submitSuccess ? (
-                                <div className="text-center py-5 animate-up">
-                                    <div className="success-icon mb-4 mx-auto" style={{ background: 'linear-gradient(135deg, #10b981, #059669)' }}>✓</div>
-                                    <h3 className="fw-bold mb-3 text-white">Claim Submitted Successfully!</h3>
-                                    <p className="text-secondary opacity-75 mb-4">Your claim ID is <span className="text-gradient fw-bold" style={{ letterSpacing: '1px' }}>{submittedClaim?.readableId || `#${submittedClaim?._id.substring(submittedClaim._id.length - 6).toUpperCase()}`}</span>. We will review your documents and get back to you within 24 hours.</p>
-                                    <Button variant="primary" onClick={() => { setSubmitSuccess(false); setClaimStep(1); }}>
-                                        Raise Another Claim
-                                    </Button>
-                                </div>
-                            ) : (
-                                <Form onSubmit={handleClaimSubmit}>
-                                    {claimStep === 1 && (
-                                        <div className="animate-fade-in">
-                                            <h4 className="fw-bold mb-4">Step 1: Policy Information</h4>
-                                            <Row>
-                                                <Col md={6} className="mb-3">
-                                                    <Form.Group>
-                                                        <Form.Label>Policy Number</Form.Label>
-                                                        <Form.Control name="policyNumber" required placeholder="e.g. POL-12345678" value={claimData.policyNumber} onChange={handleClaimChange} />
-                                                    </Form.Group>
-                                                </Col>
-                                                <Col md={6} className="mb-3">
-                                                    <Form.Group>
-                                                        <Form.Label>Vehicle Registration Number</Form.Label>
-                                                        <Form.Control name="vehicleReg" required placeholder="e.g. MH 01 AB 1234" value={claimData.vehicleReg} onChange={handleClaimChange} />
-                                                    </Form.Group>
-                                                </Col>
-                                            </Row>
-                                            <div className="d-flex justify-content-end mt-4">
-                                                <Button variant="primary" onClick={nextStep} disabled={!claimData.policyNumber || !claimData.vehicleReg}>Next Step</Button>
-                                            </div>
-                                        </div>
-                                    )}
-                                    {claimStep === 2 && (
-                                        <div className="animate-fade-in">
-                                            <h4 className="fw-bold mb-4">Step 2: Incident Details</h4>
-                                            <Row>
-                                                <Col md={6} className="mb-3">
-                                                    <Form.Group>
-                                                        <Form.Label>Date of Incident</Form.Label>
-                                                        <Form.Control type="date" name="incidentDate" required max={todayIso} value={claimData.incidentDate} onChange={handleClaimChange} />
-                                                    </Form.Group>
-                                                </Col>
-                                                <Col md={6} className="mb-3">
-                                                    <Form.Group>
-                                                        <Form.Label>Location</Form.Label>
-                                                        <Form.Control name="incidentLocation" required placeholder="City, Area" value={claimData.incidentLocation} onChange={handleClaimChange} />
-                                                    </Form.Group>
-                                                </Col>
-                                                <Col md={12} className="mb-3">
-                                                    <Form.Group>
-                                                        <Form.Label>Describe what happened</Form.Label>
-                                                        <Form.Control as="textarea" rows={3} name="description" required placeholder="Brief description of the accident/damage" value={claimData.description} onChange={handleClaimChange} />
-                                                    </Form.Group>
-                                                </Col>
-                                            </Row>
-                                            <div className="d-flex justify-content-between mt-4">
-                                                <Button variant="outline-secondary" onClick={prevStep}>Back</Button>
-                                                <Button variant="primary" onClick={nextStep} disabled={!claimData.incidentDate || !claimData.description}>Next Step</Button>
-                                            </div>
-                                        </div>
-                                    )}
-                                    {claimStep === 3 && (
-                                        <div className="animate-fade-in">
-                                            <h4 className="fw-bold mb-4">Step 3: Upload Documents</h4>
-                                            <Row>
-                                                <Col md={6} className="mb-4">
-                                                    <div className="file-upload-box p-4 text-center rounded-4 glass-panel transition-hover">
-                                                        <FaShieldAlt className="display-6 text-primary mb-3" />
-                                                        <h6 className="fw-bold text-white">Insurance Policy Document</h6>
-                                                        <p className="small text-secondary opacity-75 mb-3">Upload your policy (PDF or Image)</p>
-                                                        <Form.Control name="policyDocument" type="file" accept=".pdf,image/*" onChange={handleFileChange} className="bg-transparent border-white border-opacity-10 text-secondary" />
-                                                    </div>
-                                                </Col>
-                                                <Col md={6} className="mb-4">
-                                                    <div className="file-upload-box p-4 text-center rounded-4 glass-panel transition-hover">
-                                                        <FaClock className="display-6 text-success mb-3" />
-                                                        <h6 className="fw-bold text-white">Repair &amp; Cost Estimate</h6>
-                                                        <p className="small text-secondary opacity-75 mb-3">Upload garage estimate (PDF or Image)</p>
-                                                        <Form.Control name="repairEstimate" type="file" accept=".pdf,image/*" onChange={handleFileChange} className="bg-transparent border-white border-opacity-10 text-secondary" />
-                                                    </div>
-                                                </Col>
-                                                <Col md={12} className="mb-4">
-                                                    <Form.Check
-                                                        type="switch"
-                                                        id="fir-switch"
-                                                        label={<span className="text-white fw-bold ms-2">Was an FIR filed for this incident?</span>}
-                                                        checked={hasFIR}
-                                                        onChange={(e) => setHasFIR(e.target.checked)}
-                                                        className="mb-3"
-                                                    />
-                                                </Col>
-                                                {hasFIR && (
-                                                    <Col md={6} className="mb-4">
-                                                        <div className="file-upload-box p-4 text-center rounded-4 glass-panel transition-hover animate-fade-in" style={{ borderColor: 'rgba(239, 68, 68, 0.3)' }}>
-                                                            <FaShieldAlt className="display-6 text-danger mb-3" />
-                                                            <h6 className="fw-bold text-white">FIR Document / Image</h6>
-                                                            <p className="small text-secondary opacity-75 mb-3">Upload your police FIR</p>
-                                                            <Form.Control name="firDocument" type="file" accept=".pdf,image/*" onChange={handleFileChange} className="bg-transparent border-danger border-opacity-25 text-secondary" required={hasFIR} />
-                                                        </div>
-                                                    </Col>
-                                                )}
-                                            </Row>
-                                            <div className="d-flex justify-content-between mt-4">
-                                                <Button variant="outline-secondary" onClick={prevStep}>Back</Button>
-                                                <Button variant="danger" type="submit" disabled={isSubmitting} className="px-5">
-                                                    {isSubmitting ? 'Submitting...' : 'Submit Claim'}
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    )}
-                                </Form>
-                            )}
+                            <ClaimForm />
                         </div>
                     </Col>
                 </Row>
             </Container>
-
-            {/* ── FAQ Section ──────────────────────────────────────── */}
-            {/* <div className="py-5" style={{ background: 'radial-gradient(circle at bottom left, rgba(99, 102, 241, 0.08), transparent)' }}>
-                <Container className="my-5">
-                    <h2 className="fw-bold text-center mb-5 text-white">Frequently Asked Questions</h2>
-                    <Row className="justify-content-center">
-                        <Col lg={8}>
-                            <Accordion flush className="shadow-lg rounded-4 overflow-hidden border border-white border-opacity-10 glass-panel">
-                                {faqs.map((faq, index) => (
-                                    <Accordion.Item eventKey={index.toString()} key={index} className="bg-transparent text-white border-white border-opacity-10">
-                                        <Accordion.Header className="fw-bold">{faq.q}</Accordion.Header>
-                                        <Accordion.Body className="text-secondary opacity-75">{faq.a}</Accordion.Body>
-                                    </Accordion.Item>
-                                ))}
-                            </Accordion>
-                        </Col>
-                    </Row>
-                </Container>
-            </div> */}
         </div>
     );
 };
